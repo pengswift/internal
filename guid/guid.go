@@ -27,13 +27,13 @@ var ErrIDBackwards = errors.New("ID went backward")
 
 type guid int64
 
-type guidFactory struct {
+type GuidFactory struct {
 	sequence      int64
 	lastTimestamp int64
 	lastID        guid
 }
 
-func (f *guidFactory) NewGUID(workerID int64) (guid, error) {
+func (f *GuidFactory) NewGUID(workerID int64) (guid, error) {
 	ts := time.Now().UnixNano() >> 20
 
 	if ts < f.lastTimestamp {

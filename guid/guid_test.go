@@ -5,7 +5,7 @@ import (
 )
 
 func BenchmarkGUID(b *testing.B) {
-	factory := &guidFactory{}
+	factory := &GuidFactory{}
 	for i := 0; i < b.N; i++ {
 		guid, err := factory.NewGUID(0)
 		if err != nil {
