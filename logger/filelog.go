@@ -115,6 +115,8 @@ func (w *FileLogWriter) intRotate() error {
 			if w.daily && time.Now().Day() != w.daily_opendate {
 				// 获得昨天日期
 				yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
+				// 从1 到 999 找到一个空文件
+				// 一天最多999个日志文件
 				for ; err == nil && num <= 999; num++ {
 					// 新文件名 ＝ 文件名.昨日日期.num
 					fname = w.filename + fmt.Sprintf(".%s.%03d", yesterday, num)
@@ -134,6 +136,7 @@ func (w *FileLogWriter) intRotate() error {
 			}
 			w.file.Close()
 
+			// 文件重命名
 			err = os.Rename(w.filename, fname)
 			if err != nil {
 				return fmt.Errorf("Rotate: %s\n", err)
@@ -141,6 +144,7 @@ func (w *FileLogWriter) intRotate() error {
 		}
 	}
 
+	// 重新打开文件
 	fd, err := os.OpenFile(w.filename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		return err
