@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"encoding/binary"
+	"errors"
 	"io"
 	"net"
 )
@@ -59,4 +60,20 @@ func ReadResponse(r io.Reader) ([]byte, error) {
 	}
 
 	return buf, nil
+}
+
+func UnpackResponse(response []byte) (int32, []byte, error) {
+	if len(response) < 4 {
+		return -1, nil, errors.New("length of response is too small")
+	}
+
+	return int32(binary.BigEndian.Uint32(response)), response[4:], nil
+}
+
+func ReadUnpackedResponse(r io.Reader) (int32, []byte, error) {
+	resp, err := ReadResponse(r)
+	if err != nil {
+		return -1, nil, err
+	}
+	return UnpackResponse(resp)
 }
